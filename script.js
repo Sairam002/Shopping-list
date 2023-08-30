@@ -66,17 +66,6 @@ function clearAll() {
 }
 
 
-function displayOrHideItems() {
-
-    if (itemList.children.length === 0) {
-        filterItems.style.display = `none`;
-        clearBtn.style.display = `none`;
-    } else {
-        filterItems.style.display = `block`;
-        clearBtn.style.display = `block`;
-    }
-}
-
 
 function onFilter(e) {
     let items = Array.from(itemList.children);
