@@ -12,6 +12,7 @@ function addNewItem(e) {
         alert("Please add some item!!!");
     }
     else {
+
         addItemTODOM(formInput.value);
         addItemToStorage(formInput.value);
     }
@@ -49,24 +50,59 @@ function addItemToStorage(item) {
     localStorage.setItem("items", JSON.stringify(itemsFromStorage));
 }
 
+
 function onItemListClick(e) {
+    let element = e.target.parentElement.parentElement;
     if (e.target.tagName === "I") {
-        e.target.parentElement.parentElement.remove();
+        deleteItemFromDOM(element);
+        deleteFromStorage((element.innerText));
+    }
+    else {
+        // formInput.value = e.target.innerText;
+        // addItem.innerHTML = `<i class = " fa fa-solid fa-pen"></i> Update Item`;
+        // addItem.style.backgroundColor = "green";
+
+        // updateItem();
     }
 
     displayOrHideItems();
 }
 
 
+function updateItem() {
+    //item tesukovali
+    //item ni save cheyyali
+
+
+}
+
+
+function deleteItemFromDOM(element) {
+    element.remove();
+}
+
+
+function deleteFromStorage(item) {
+    let itemsFromStorage = JSON.parse(localStorage.getItem("items"));
+    let remainingItems = itemsFromStorage.filter(i => (i !== item));
+
+    localStorage.setItem("items", JSON.stringify(remainingItems));
+}
+
 function clearAll() {
     let array = Array.from(itemList.children);
-    let userInput = prompt("Are you sure you want to delete all items? Please enter yes or no");
+    // let itemsFromStorage = JSON.parse(localStorage.getItem("items"));
 
-    if (userInput.toLowerCase() === "yes") {
+
+    if (confirm("You sure want to clear all items!")) {
         array.forEach(item => {
             item.remove();
         })
+
+        localStorage.removeItem("items");
     }
+
+
 
     displayOrHideItems("none");
 }
@@ -82,6 +118,15 @@ function displayOrHideItems() {
     }
 }
 
+
+function getItemsFromStorage() {
+    const items = JSON.parse(localStorage.getItem("items"));
+    items.forEach(item => addItemTODOM(item));
+
+    displayOrHideItems();
+}
+
+
 function onFilter(e) {
     let items = Array.from(itemList.children);
     items.forEach(item => {
@@ -96,7 +141,7 @@ function onFilter(e) {
 
 displayOrHideItems();
 
-
+window.addEventListener("load", getItemsFromStorage);
 addItem.addEventListener("click", addNewItem);
 itemList.addEventListener("click", onItemListClick);
 clearBtn.addEventListener("click", clearAll);
