@@ -8,40 +8,46 @@ const filterItems = document.getElementById("filter");
 function addNewItem(e) {
     e.preventDefault();
 
-    const ul = document.querySelector("ul");
-    const li = document.createElement("li");
-
     if (formInput.value === "" || formInput.value.trim() === "") {
         alert("Please add some item!!!");
     }
-
     else {
-
-        let value = [];
-        let array = Array.from(itemList.children);
-        array.forEach(item => {
-            value.push(item.innerText.toLowerCase());
-        })
-
-        if (!(value).includes(formInput.value.toLowerCase())) {
-            li.innerHTML =
-                `${formInput.value}
-                    <button class="remove-item btn-link text-red">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
-        `
-            ul.appendChild(li);
-        }
+        addItemTODOM(formInput.value);
+        addItemToStorage(formInput.value);
     }
-
     formInput.value = "";
     displayOrHideItems("initial");
 }
 
-function adddItemToStorage(item) {
+function addItemTODOM(Item) {
+    const ul = document.querySelector("ul");
+    const li = document.createElement("li");
+    let value = [];
+    let array = Array.from(itemList.children);
+    array.forEach(item => {
+        value.push(item.innerText.toLowerCase());
+    })
 
+    if (!(value).includes(Item.toLowerCase())) {
+        li.innerHTML = `${Item}<button class="remove-item btn-link text-red"><i class="fa-solid fa-xmark"></i></button>`
+
+        ul.appendChild(li);
+    }
 }
 
+function addItemToStorage(item) {
+
+    let itemsFromStorage;
+
+    if (localStorage.getItem("items") === null) {
+        itemsFromStorage = [];
+    } else {
+        itemsFromStorage = JSON.parse(localStorage.getItem("items"));
+    }
+
+    itemsFromStorage.push(item);
+    localStorage.setItem("items", JSON.stringify(itemsFromStorage));
+}
 
 function onItemListClick(e) {
     if (e.target.tagName === "I") {
@@ -66,6 +72,15 @@ function clearAll() {
 }
 
 
+function displayOrHideItems() {
+    if (itemList.children.length === 0) {
+        filterItems.style.display = `none`;
+        clearBtn.style.display = `none`;
+    } else {
+        filterItems.style.display = `block`;
+        clearBtn.style.display = `block`;
+    }
+}
 
 function onFilter(e) {
     let items = Array.from(itemList.children);
